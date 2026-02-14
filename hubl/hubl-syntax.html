@@ -1,0 +1,299 @@
+{# 
+ 
+HubL Syntax
+- HubL is the jinja inspired templating langauge 
+
+ #}
+
+
+
+
+
+{# TYPES OF DELIMETERS ============================================== #}
+
+{%  %} - Statement delimeters
+{{  }} - Expression delimeters
+{#  #} - Comment delimeters
+
+
+
+
+
+{# Statements #}
+
+{%  %} 
+
+Used to create:
+- Editable modules
+- Define conditional template logic
+- Set up loops
+- define variables
+
+*NOTE Do not print anything to the page
+
+
+
+
+
+{# Expression #}
+
+{{ }}
+
+Expressions print values stored in the context of the template
+
+Example usage: A variable must be defined as a statement but then 
+a hubL expression would be used to print the variable
+
+
+
+
+
+{# Do tag #}
+
+{% do %}
+
+The 'do' tag works like a statement, and can be used to modify lists and dictionaries 
+
+*NOTE
+
+When adding values to arrays, use .append() instead.
+When adding values to objects, use .update() instead.
+
+
+
+
+
+<!-- Arrays -->
+{% set navigation = ["Home", "About"] %}
+{% do navigation.append("Contact Us") %}
+{{navigation}}
+
+{# Arrays Output  #}
+ [Home, About, Contact Us]
+
+ <!-- Objects -->
+{% set book = {"name" : "Rocking HubL", "author" : "John Smith" }%}
+{% do book.update({"ebook" : "yes"}) %}
+{{book}}
+
+{# Objects/Dictionary Output #}
+ {name=Rocking HubL, author=John Smith, ebook=yes}
+
+
+
+
+
+{# MODULES ============================================== #}
+
+{% moduel unique name 
+  path="@hubspot/text"
+  label="Single Text Line"
+  value="This is a single text line"
+%}
+
+
+{# Output #}
+
+<div
+  class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-text widget-type-text"
+  data-hs-cos-general-type="widget"
+  data-hs-cos-type="module"
+  id="hs_cos_wrapper_text"
+  style=""
+>
+  <span
+  class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_text"
+  data-hs-cos-general-type="widget"
+  data-hs-cos-type="text"
+  id="hs_cos_wrapper_text_"
+  style=""
+  >
+    This is a single text line
+  </span>
+</div>
+
+
+
+
+{# Example of default and custom module syntax  #}
+
+
+{# HubSpot default text module #}
+{% module "job_title"
+  path="@hubspot/text",
+  label="Job Title",
+  value="Chief Morale Officer"
+%}
+
+{# Custom module #}
+{% module "faqs"
+  path="/myWebsite/modules/faq_module",
+  label="Custom FAQ Module"
+  faq_group_title="Commonly Asked Questions"
+%}
+
+
+
+
+{# Variables and macros ============================================== #}
+
+
+{% set primaryColor = '#F7761F' %} {# defines variable and assigns HEX color #}
+
+<style>
+a {
+  color: {{ primaryColor }}; {# prints variable HEX value #}
+}
+</style>
+
+
+
+{# Macros ============================================================= #}
+
+- HubL Macros allow you to print multiple statements wiht dynamic value
+
+
+{% macro trans(value) %}
+-webkit-transition: {{value}};
+-moz-transition: {{value}};
+-o-transition: {{value}};
+-ms-transition: {{value}};
+transition: {{value}};
+{% endmacro %}
+
+<style>
+a {
+{{ trans("all .2s ease-in-out") }}
+}
+</style>
+
+
+
+{# Output #}
+
+<style>
+a {
+-webkit-transition: all 0.2s ease-in-out;
+-moz-transition: all 0.2s ease-in-out;
+-o-transition: all 0.2s ease-in-out;
+-ms-transition: all 0.2s ease-in-out;
+transition: all 0.2s ease-in-out;
+}
+</style>
+
+
+
+
+
+{# Filters and functions ============================================== #}
+https://developers.hubspot.com/docs/cms/reference/hubl/filters
+https://developers.hubspot.com/docs/cms/reference/hubl/functions
+
+
+{# Filter  #}
+You can alter and transform values of template variables using HubL filters
+
+
+Adds a numeric value to another numeric value.
+
+{% set my_num = 40 %}
+{{ my_num|add(13) }}
+
+
+
+
+{# Functions  #}
+ While filters affect how variables render, HubL functions process values and render that information. For example, you can use a function to get the total number of posts for a particular blog or to lighten/darken a color variable by a particular amount.
+
+{% set numbers_under_5 = [1,2,3] %}
+{% do numbers_under_5.append(4) %}
+{{numbers_under_5}}
+
+
+
+
+
+{# If statements ============================================== #}
+
+If statements allow you to use conditional logic to dictate how your template will render
+conditional logic in HubL statements 
+An if statement must begin with an if and end with an endif.
+
+{% choice "department" label="Choose department", value="Marketing", choices="Marketing, Sales, Dev, Services" export_to_template_context=True %}
+
+{% if widget_data.department.value == "Marketing" %}
+
+<h3>Want to join our amazing Marketing team?</h3>
+<h4>We have exciting career opportunities on the {{ widget_data.department.value }} team.</h4>
+
+{% elif widget_data.department.value == "Sales" %}
+
+<h3>Are you a Sales superstar?</h3>
+<h4>We have exciting career opportunities on the {{ widget_data.department.value }} team.</h4>
+
+{% elif widget_data.department.value == "Dev" %}
+
+<h3>Do you love to ship code?</h3>
+<h4>We have exciting career opportunities on the {{ widget_data.department.value }} team.</h4>
+
+{% else %}
+
+<h3>Want to work with our awesome customers?</h3>
+<h4>We have exciting career opportunities on the {{ widget_data.department.value }} team.</h4>
+
+{% endif %}
+
+
+
+
+
+{# for loops ============================================== #}
+
+
+{% set bears = ["panda bear", "polar bear", "black bear", "grizzly bear", "koala bear"] %}
+
+<h1>Types of bears</h1>
+<ul>
+  {% for bear in bears %}
+  <li>{{ bear }}</li>
+  {% endfor %}
+</ul>
+
+
+
+
+{# Escaping HubL delimeters ============================================== #}
+
+Many other languages share the same delimiters as HubL, which can create issues when working in coded files on the CMS. If you want to use a HubL delimiter for a different language, or otherwise prevent code from being rendered as HubL, you can wrap it with {% raw %}/ {% endraw %}.
+
+{% raw %}
+ {{"Code you want to escape"}}
+{% endraw %}
+
+
+
+
+
+{# Including files in files ============================================== #}
+
+
+
+{% include "custom/page/web_page_basic/my_footer.html" %}
+{% include "hubspot/styles/patches/recommended.css" %}
+
+
+
+
+{# Blocks and extends ============================================== #}
+
+
+{% extends "custom/page/web_page_basic/my_template.html" %}
+{% block my_sidebar %}
+<h3>Sidebar title</h3>
+<ul>
+  <li>Bullet 1<li>
+  <li>Bullet 2<li>
+  <li>Bullet 3<li>
+</ul>
+{% endblock %}
+
