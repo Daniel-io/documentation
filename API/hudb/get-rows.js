@@ -1,5 +1,5 @@
 
-// Example with Developers account
+// https://developers.hubspot.com/docs/api-reference/latest/cms/hubdb/rows/get-rows
 
 const tableID = "23690361";
 // const token = "pat-na1-5ac7a1fe...";
