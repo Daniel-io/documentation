@@ -1,19 +1,21 @@
 
-
 // Example with Developers account
 
-const tableIdOrName = "16215925";
-// const privateAppKey = "pat-na1-94cbfbbf-1dc...";
+const tableID = "23690361";
+// const token = "pat-na1-5ac7a1fe...";
 
-const getHubDbRows = async () => {
+const options = {
+  method: "GET",
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+};
+
+const fetchHubDbRows = async () => {
   try {
     const response = await fetch(
-      `https://api.hubapi.com/cms/v3/hubdb/tables/${tableIdOrName}/rows`,
-      {
-        headers: {
-          Authorization: `Bearer ${privateAppKey}`,
-        },
-      }
+      `https://api.hubapi.com/cms/v3/hubdb/tables/${tableID}/rows`,
+      options
     );
 
     if (!response.ok) {
@@ -27,7 +29,8 @@ const getHubDbRows = async () => {
     return data;
   } catch (error) {
     console.error("Error fetching HubDB rows:", error.message);
+    throw error;
   }
 };
 
-getHubDbRows();
+fetchHubDbRows();

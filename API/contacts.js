@@ -1,14 +1,17 @@
-// const privateAppKey = "pat-na1-...";
+// const token = "pat-na1-5ac7a...;
+
+const requestOptions = {
+  method: "GET",
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+};
 
 const getContacts = async () => {
   try {
     const response = await fetch(
       "https://api.hubapi.com/crm/v3/objects/contacts?limit=10&properties=firstname,lastname,email",
-      {
-        headers: {
-          Authorization: `Bearer ${privateAppKey}`,
-        },
-      }
+      requestOptions
     );
 
     if (!response.ok) {
@@ -22,6 +25,7 @@ const getContacts = async () => {
     return data;
   } catch (error) {
     console.error("Error fetching contacts:", error.message);
+    throw error;
   }
 };
 
