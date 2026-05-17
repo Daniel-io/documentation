@@ -1,0 +1,121 @@
+{# https://developers.hubspot.com/docs/cms/reference/hubl/variables #}
+
+{# See All available variables  #}
+ {# <pre>{{ dump() }}</pre> #}
+
+ 
+<pre>
+  {{ site_settings|pprint }}      {# Site-wide settings like favicon, brand colors, etc. #}
+  {{ page_meta|pprint }}          {# Page-specific metadata (title, description) #}
+  {{ content|pprint }}            {# The main page/module content #}
+  {{ content_group|pprint }}      {# Group of page content, if applicable #}
+  {{ request|pprint }}            {# Request information like query params, language #}
+  {{ theme|pprint }}              {# Current theme settings #}
+  {{ module|pprint }}             {# The current module's fields and settings #}
+
+  {# CRM & Object Variables (Quotes, Deals, Contacts, etc.) #}
+  {{ quote|pprint }}              {# Quote details, line items, totals, etc. #}
+  {{ deal|pprint }}               {# Deal properties if linked to the quote #}
+  {{ contact|pprint }}            {# Contact properties if associated #}
+  {{ company|pprint }}            {# Company information #}
+  {{ owner|pprint }}              {# The HubSpot user who owns the record #}
+
+  {# HubDB, Membership, and Other Dynamic Variables #}
+  {{ hubdb_table_rows(table_id)|pprint }}   {# Fetch data from a HubDB table #}
+  {{ member|pprint }}                       {# Current logged-in portal user #}
+  {{ content.translations|pprint }}         {# Language variations for multilingual sites #}
+
+  {# Debug: Print all available variables in the current context #}
+  {{ context|pprint }}
+  {# globals()|pprint  #}
+
+
+  {{ blog|pprint }}          {# The blog this post belongs to — contains blog.id, blog.title, etc. #}
+  {{ tag|pprint }}           {# The current tag if viewing a tag page #}
+  {{ topic|pprint }}         {# The current topic if viewing a topic page #}
+  {{ author|pprint }}        {# Author object for the current post #}
+
+</pre>
+
+
+
+
+{# Not sure about these #} 
+
+{{ blog.id }}           {# Blog's unique ID #}
+{{ blog.name }}         {# Internal name of the blog #}
+{{ blog.root_url }}     {# URL of the blog #}
+{{ blog.title }}        {# Public-facing blog title #}
+
+
+
+
+
+{{ group }} is a special HubL variable that refers to the blog object when you're inside a blog post or blog listing template.
+
+| Property                           | What it gives you                        |
+| ---------------------------------- | ---------------------------------------- |
+| `group.name`                       | The blog’s name (e.g. “Recipes Blog”)    |
+| `group.id`                         | The internal HubSpot blog ID             |
+| `group.absolute_url`               | The URL to the **blog listing page**     |
+| `group.description`                | Blog description                         |
+| `group.subscription_lists_by_type` | Used to show email subscribe form        |
+| `group.allow_comments`             | Whether comments are allowed on the blog |
+
+
+
+
+
+
+{# ===============================
+   HUBSPOT MENU ITEM HIERARCHY
+   =============================== #}
+
+{# Top-level menu object returned by menu() #}
+{% set menu_items = menu(menu_id, root_type).children %}
+
+{# -------------------------------
+   Parent menu item
+--------------------------------- #}
+{% for link in menu_items %}
+  {{ link.label }}        {# Text label of the menu item #}
+  {{ link.url }}          {# URL of the menu item #}
+  {{ link.activeNode }}   {# True if this item matches the current page #}
+  {{ link.linkTarget }}   {# '_blank' or 'NEW_TAB' if "Open in new tab" is checked #}
+  {{ link.children }}     {# List of child menu items, if any #}
+
+  {# -------------------------------
+     Child menu items
+  --------------------------------- #}
+  {% for child in link.children %}
+    {{ child.label }}        {# Text label #}
+    {{ child.url }}          {# URL #}
+    {{ child.activeNode }}   {# True if current page matches #}
+    {{ child.linkTarget }}   {# '_blank' or 'NEW_TAB' #}
+    {{ child.children }}     {# List of grandchild items, if any #}
+
+    {# -------------------------------
+       Grandchild menu items
+    --------------------------------- #}
+    {% for grandchild in child.children %}
+      {{ grandchild.label }}        {# Text label #}
+      {{ grandchild.url }}          {# URL #}
+      {{ grandchild.activeNode }}   {# True if current page matches #}
+      {{ grandchild.linkTarget }}   {# '_blank' or 'NEW_TAB' #}
+    {% endfor %}
+  {% endfor %}
+{% endfor %}
+
+
+{# Usage example menu #}
+ {% set menu_items = menu(module.menu, 'site_root').children %}
+
+{% for link in menu_items %}
+  <a href="{{ link.url }}">{{ link.label }}</a>
+
+  {% if link.children %}
+    {% for child in link.children %}
+      <a href="{{ child.url }}">{{ child.label }}</a>
+    {% endfor %}
+  {% endif %}
+{% endfor %}
