@@ -4,6 +4,7 @@
 
 ```
 <type>(optional scope): short description
+
 ```
 
 **Example**
