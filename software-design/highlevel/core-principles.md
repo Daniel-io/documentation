@@ -220,3 +220,10 @@
 * Is this abstraction justified?
 * What are the costs vs benefits of this design?
 * Am I optimizing too early?
+
+
+- patter/system lifcycle
+- downstream consumers
+- derived states
+- state transitions
+- persistance schema
