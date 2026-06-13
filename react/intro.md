@@ -23,7 +23,7 @@ componentWillUnmount() {
 
 ### Function Components
 
-Lifecycle behavior is handled using hooks:
+ycle behavior is handled using hooks:
 
 ```js
 useEffect(() => {
